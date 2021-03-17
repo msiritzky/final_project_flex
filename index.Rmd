@@ -4,33 +4,236 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    source_code: https://github.com/msiritzky/edld652/tree/main/final_project
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(tidyverse)
+library(here)
+library(rio)
+library(janitor)
+library(stringr)
+library(knitr)
+library(psych)
+library(viridis)
+library(heatmaply)
+library(ggdark)
+options("scipen" = 999)
 ```
+
+```{r import_data, include=FALSE}
+# import covid_data
+covid_data <-  import(here("data", "synth_covid_data.csv"))
+```
+
+```{r prep_country_data, include=FALSE}
+# countries by name, not number
+countries_in_order = c("Australia",
+                       "Argentina",
+                       "Mexico",
+                       "India",
+                       "Nigeria",
+                       "Egypt",
+                       "China",
+                       "Saudi Arabia",
+                       "USA")
+
+covid_data = covid_data %>%
+  mutate(country_of_residence = factor(country_of_residence, 
+                                       levels = c(1:9),
+                                       labels = countries_in_order))
+```
+
+```{r measure_scores, include=FALSE}
+# recode reverse keyed items
+covid_data <- covid_data %>% 
+  mutate(gov_preparedness_6 = 6 - gov_preparedness_6)
+
+# make column for perceived controllability score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("perceived_control")) %>%
+  pivot_longer(c(perceived_control_1, 
+                 perceived_control_2), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(control = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for government preparedness score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("gov_prep")) %>%
+  pivot_longer(c(gov_preparedness_1,
+                 gov_preparedness_2,
+                 gov_preparedness_3,
+                 gov_preparedness_4,
+                 gov_preparedness_5,
+                 gov_preparedness_6), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(gov_prep = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for trust in gov score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("trust_in_gov")) %>%  
+  pivot_longer(c(trust_in_gov_1,
+                 trust_in_gov_2,
+                 trust_in_gov_3,
+                 trust_in_gov_4,
+                 trust_in_gov_5,
+                 trust_in_gov_6,
+                 trust_in_gov_7), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(trust = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for gov performance score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("gov_perf")) %>%
+  pivot_longer(c(gov_performance_1,
+                 gov_performance_2,
+                 gov_performance_3,
+                 gov_performance_4,
+                 gov_performance_5,
+                 gov_performance_6), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(gov_perf = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for gov compliance score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("gov_comp")) %>%
+  pivot_longer(c(gov_compliance_1,
+                 gov_compliance_2), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(gov_comp = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for risk perception score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("risk")) %>%
+  pivot_longer(c(risk_perception_1,
+                 risk_perception_2,
+                 risk_perception_3), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(risk = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for depression score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("depression")) %>%
+  pivot_longer(c(promis_depression_1,
+                 promis_depression_2,
+                 promis_depression_3,
+                 promis_depression_4), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(dep = mean(value)) %>%
+  full_join(covid_data)
+
+# make column for anxiety score
+covid_data = covid_data %>%
+  select(m_turk_code, contains("anxiety")) %>%
+  pivot_longer(c(promis_anxiety_1,
+                 promis_anxiety_2,
+                 promis_anxiety_3,
+                 promis_anxiety_4), 
+               names_to = "item", 
+               values_to = "value") %>%
+  group_by(m_turk_code) %>%
+  summarize(anx = mean(value)) %>%
+  full_join(covid_data)
+
+```
+
+Visualization 1
+=========================
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Background
+
+For my first visualization, I wanted to depict the relationship between trust in the government and an individual's likelihood of compliance with government policies and recommendations. My first version of this visualization was a line plot with geom_smooth that was facet-wrapped by country. 
+
+In the interest of depicting uncertainty in a more accessible or easily-understood way, I decided to generate bootstrapped data and create Hypothetical Outcome Plots to visualize uncertainty in the line of best fit. Furthermore, I felt that it would be more informative to viewers to include the data points themselves using geom_point. I also removed the legend, as it was superfluous, and changed the aesthetic of the plot using the ggdark package. 
+
+What the final version of this visualization depicts is that for many of these countries, people who trust their government more are also more likely to comply with what the government is telling them to do. However, there are also countries in which individuals showed high compliance regardless of how much trust they had in their government.
 
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Initial Visualization
 
-```{r}
-
+```{r dataviz_1}
+viz_1 <- covid_data %>% 
+ggplot(aes(trust, gov_comp)) +
+  geom_smooth(aes(colour = 
+                    fct_reorder(country_of_residence, gov_comp)),
+             size = 0.5) +
+  facet_wrap(~country_of_residence) +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  xlab("Trust in government") +
+  ylab("Compliance with government policies") +
+  labs(title = "Greater trust in government differentially predicts higher compliance",
+       color = 'Country of Residence')
+viz_1
 ```
 
+### Final Visualization
+
+```{r viz_1_final}
+# bootstrap data to show uncertainty
+row_samps <- replicate(100,
+                       sample(seq_len(nrow(covid_data)), 
+                              nrow(covid_data), 
+                              replace = TRUE),
+                       simplify = FALSE)
+d_samps <- map_df(row_samps, ~covid_data[.x, ], .id = "sample")
+
+viz_1_final <- ggplot(covid_data, aes(trust, gov_comp)) +
+  stat_smooth(aes(group = sample,
+                  colour = fct_reorder(country_of_residence, gov_comp)),
+              data = d_samps,
+              geom = "line",
+              fullrange = TRUE,
+              size = 0.05) +
+  geom_point(size = 0.07) +
+  facet_wrap(~country_of_residence) +
+  dark_mode(theme_minimal()) +
+  scale_color_viridis_d(begin = 0.25) +
+  xlab("Trust in government") +
+  ylab("Compliance with government policies") +
+  labs(title = "Greater trust in government differentially predicts higher compliance",
+       color = 'Country of Residence') +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = "none")
+viz_1_final
+```
+
+Weird Flex
+=========================
+Column {data-width=650}
+-----------------------------------------------------------------------
+### Chart A
+< r code chunk >
 Column {data-width=350}
 -----------------------------------------------------------------------
-
 ### Chart B
-
-```{r}
-
-```
-
+< r code chunk >
+But Okay
+========================
 ### Chart C
-
-```{r}
-
-```
-
+< r code chunk >
