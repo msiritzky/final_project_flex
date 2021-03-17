@@ -3,8 +3,8 @@ title: "Meg Siritzky Final Project"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
-    vertical_layout: fill
-    horizontal_layout: fill
+    social: menu
+    source: embed
     source_code: https://github.com/msiritzky/edld652/tree/main/final_project
 editor_options: 
   chunk_output_type: console
@@ -161,42 +161,38 @@ covid_data = covid_data %>%
 
 ```
 
-Introduction
-=========================
+The Data {.storyboard}
+==============================
 
-Column {data-width=500}
------------------------------------------------------------------------
+Data Source {.sidebar}
+--------------------------
+
+**The plots displayed on this dashboard are generated from a synthetic dataset intended to represent original data collected in April 2020 by the University of Oregon PIE Lab.**
+
+Meg Siritzky produced this synthetic data using the synthpop package and created the plots shown using the ggplot and heatmaply packages.
 
 ### Introduction
 
-A challenge of public health crises is identifying the factors that predict whether individuals will adhere to recommendations by medical professionals and government officials. We collected these data in April 2020 to explore the role of perception of governmental responses to the pandemic in driving individuals to ignore government recommendations, eschew preventive behaviors, or experience mental health problems.
+A challenge of public health crises is identifying the factors that predict whether individuals will adhere to recommendations by medical professionals and government officials. We collected data in April 2020 to explore the role of perception of governmental responses to the pandemic in driving individuals to ignore government recommendations, eschew preventive behaviors, or experience mental health problems. 
 
-Lack of trust in the government‘s capabilities or communication has been associated with adoption of avoidance behaviors and increased anxiety during H1N1 and MERS outbreaks (Gaygısız, Gaygısız, Özkan, & Lajunen, 2012; Kang, Kim, & Cha, 2018). In past crises, mistrust in authorities has been linked indirectly to psychological distress by causing greater perceptions of risk (Goldsteen, Goldsteen, & Schorr, 1992). Conversely, trust in government has been linked to adoption of preventive measures and vaccine acceptance during the SARS and H1N1 pandemics (Bish & Michie, 2010; Freimuth, Musa, Hilyard, Quinn, & Kim, 2014; van der Weerd, Timmermans, Beaujean, Oudhoff, & van Steenbergen, 2011). We would expect adverse psychological outcomes such as anxiety to be higher when people believe their government has mismanaged the pandemic and put their citizens at greater risk (DePrince & Cook, 2020; Smith & Freyd, 2014). 
+Lack of trust in the government‘s capabilities or communication has been associated with adoption of avoidance behaviors and increased anxiety during H1N1 and MERS outbreaks (Gaygısız, Gaygısız, Özkan, & Lajunen, 2012; Kang, Kim, & Cha, 2018). In past crises, mistrust in authorities has been linked indirectly to psychological distress by causing greater perceptions of risk (Goldsteen, Goldsteen, & Schorr, 1992). Conversely, trust in government has been linked to adoption of preventive measures and vaccine acceptance during the SARS and H1N1 pandemics (Bish & Michie, 2010; Freimuth, Musa, Hilyard, Quinn, & Kim, 2014; van der Weerd, Timmermans, Beaujean, Oudhoff, & van Steenbergen, 2011).  
 
-Column {data-width=500}
------------------------------------------------------------------------
+### Participants
+The study design was based on cross-sectional data collection in 9 countries. Participants were recruited through two distinct mechanisms: Amazon's Mechanical Turk for US participants and Qualtrics participant panels for non-US participants. The total sample size was 971 participants. Measures were translated into Mandarin, Spanish, and Arabic. All participants were 18 years of age or older (59.1% identified as female), and most were highly educated (mean years of education = 15.00). Few participants (2.2%) had been diagnosed with COVID-19 at the time of data collection, but 14.0% personally knew someone who had been. 
 
-### Methods
-#### Participants
-The study design was based on cross-sectional data collection in 9 countries. Participants were recruited through two distinct mechanisms: Amazon's Mechanical Turk (for US participants) and Qualtrics participant panels (for non-US participants). To maximize the number of countries from which we could sample and the number of participants per country, we set a target sample size of 100 participants per country, knowing that a sample size of 95 participants from each country would give us 90% power to detect correlations as small as 0.32. The total sample size was 971 participants. Measures were translated into Mandarin, Spanish, and Arabic, to ensure we could sample from a more representative population than just English speakers. All participants were 18 years of age or older (59.1% identified as female), and most were highly educated (mean years of education = 15.00). Few participants (2.2%) had been diagnosed with COVID-19 at the time of data collection, but 14.0% personally knew someone who had been. 
-
-#### Measures
-##### Perception of Government Response
+### Measures
+#### Perception of Government Response
 Participants completed adapted measures of trust in government, perception of government preparedness, and perception of government performance (Freimuth, Musa, Hilyard, Quinn, & Kim, 2014; Lau et al., 2011; Murtin et al., 2018). Sum scores of each measure were used to calculate each component of perception of government response in relation to COVID-19.
 
-##### Behavioral & Mental Health Outcomes
+#### Behavioral & Mental Health Outcomes
 Participants self-reported social distancing behaviors by selecting which of the following actions they have taken as a result of COVID-19: “avoided physical contact with people outside of your immediate family,” “avoided visiting crowded places,” “avoided traveling abroad,” and “stopped leaving the house for work.” The number of actions selected is the social distancing score. Participants completed an adapted measure of preventive behaviors (Betancourt et al., 2016; Lau et al., 2011). Sum scores were used to calculate overall adoption of preventive behavior, and we also looked at item-level adoption of preventive behaviors. In addition, we administered an adapted measure of likelihood of compliance with government policies (Lau et al., 2011) for which participants reported how likely they were to "comply with quarantine measures of the government if necessary" and "comply with governmental recommendations for preventing COVID-19". To assess depression and anxiety outcomes, the PROMIS® Anxiety and Depression 4-item measures (Pilkonis et al., 2011) were administered.
 
+Visualization 1 {.storyboard}
+==============================
 
-Visualization 1 {data-orientation=rows}
-=========================
+### Version 1
 
-Row {data-height=600}
------------------------------------------------------------------------
-
-### Initial Visualization
-
-```{r dataviz_1}
+```{r 1_version_1}
 viz_1 <- covid_data %>% 
 ggplot(aes(trust, gov_comp)) +
   geom_smooth(aes(colour = 
@@ -212,9 +208,20 @@ ggplot(aes(trust, gov_comp)) +
 viz_1
 ```
 
-### Final Visualization
+***
 
-```{r viz_1_final}
+#### Intended Purpose
+For my first visualization, I wanted to depict the relationship between trust in the government and an individual’s likelihood of compliance with government policies and recommendations. 
+
+#### Intended Audience
+The intended audience of this visualization is public policymakers and public health officials whose strategies for targeting compliance with public health policies could be informed by an understanding of the role of trust in government in driving compliance. 
+
+#### Description of Version 1
+My first version of this visualization was a line plot with geom_smooth that was facet-wrapped by country. I got feedback here that the colors can be a bit difficult to differentiate between countries, and I also got a suggestion from a reviewer to change the color of the confidence interval to match the color of each line and get rid of the legend because it is superfluous.
+
+### Version 2
+
+```{r 1_version_2}
 # bootstrap data to show uncertainty
 row_samps <- replicate(100,
                        sample(seq_len(nrow(covid_data)), 
@@ -243,38 +250,20 @@ viz_1_final <- ggplot(covid_data, aes(trust, gov_comp)) +
 viz_1_final
 ```
 
-Row
------------------------------------------------------------------------
+***
 
-### Initial
+#### Description of Version 2
+Rather than changing the color of the confidence intervals, in the interest of depicting uncertainty in a more accessible or easily-understood way, I decided to generate bootstrapped data and create Hypothetical Outcome Plots to visualize uncertainty in the line of best fit. I acknowledge that using this method doesn't show how the confidence intervals become larger when we are fitting the line to only a few data points, which is why I felt that it would be more informative to viewers to also include the data points themselves using geom_point. I also removed the legend, as it was superfluous, and changed the aesthetic of the plot using the ggdark package so the colors of each country would stand out more.
 
-For my first visualization, I wanted to depict the relationship between trust in the government and an individual's likelihood of compliance with government policies and recommendations. My first version of this visualization was a line plot with geom_smooth that was facet-wrapped by country. 
-
-### Changes made
-In the interest of depicting uncertainty in a more accessible or easily-understood way, I decided to generate bootstrapped data and create Hypothetical Outcome Plots to visualize uncertainty in the line of best fit. Furthermore, I felt that it would be more informative to viewers to include the data points themselves using geom_point. I also removed the legend, as it was superfluous, and changed the aesthetic of the plot using the ggdark package. 
-
-### Takeaways
+#### Takeaways
 What the final version of this visualization depicts is that for many of these countries, people who trust their government more are also more likely to comply with what the government is telling them to do. However, there are also countries in which individuals showed high compliance regardless of how much trust they had in their government.
 
-Visualization 2
-=========================
-Column {data-width=250}
------------------------------------------------------------------------
+Visualization 2 {.storyboard}
+==============================
 
-### Background
+### Version 1
 
-For my second visualization, I wanted to depict the distribution of adoption of preventive behaviors by country. My first version of this visualization is a ridgeline plot showing the number of preventive behaviors adopted for each country. It shows that for most countries from which we sampled -- but notably not the U.S. and Australia -- people largely adopted five or more preventive behaviors. The U.S. and Australia showed a broader range in the number of preventive behaviors adopted. 
-
-A limitation of my first visualization was that it was not broken up into specific preventive behaviors, so it was not possible to parse out why certain countries had different distributions (i.e. what behaviors were driving those differences). To address this issue, instead of using a ridgeline plot I visualized the adoption of each specific preventive behavior using a dumbbell dot plot. The average adoption of each behavior in each country was visualized using geom_point, and I used geom_line to show the range of average adoption across all nine countries. I also clustered the countries by region and ordered the behaviors by the range of their average adoption. Finally, I changed the aesthetic of the plot using the ggdark package. 
-
-Using geom_point and geom_line in my final visualization made it easier to see the distribution across countries -- and how that distribution varied by behavior. Mask wearing, for instance, showed a broad spread across countries, with the U.S. and Australia showing low adoption while over 50% of individuals in the other countries reporting adoption of that behavior. In contrast, hand washing showed a small range, with average adoption clustered near 100% of individuals across countries.
-
-Column
------------------------------------------------------------------------
-
-### Initial Visualization
-
-```{r dataviz_2}
+```{r 2_version_1}
 viz_2 <- covid_data %>% 
   mutate(country_of_residence = 
            fct_relevel(country_of_residence,
@@ -310,9 +299,20 @@ viz_2 <- covid_data %>%
 viz_2
 ```
 
-### Final Visualization
+***
 
-```{r viz_2_final}
+#### Intended Purpose
+For my second visualization, I wanted to depict the distribution of adoption of preventive behaviors by country. 
+
+#### Intended Audience
+The intended audience of this visualization, like the first one, could be public policymakers and public health officials. It could also be interesting to the general public to see how norms around adoption of preventive behaviors vary around the world. 
+
+#### Description of Version 1
+My first version of this visualization is a ridgeline plot showing the number of preventive behaviors adopted for each country. It shows that for most countries from which we sampled -- but notably not the U.S. and Australia -- people largely adopted five or more preventive behaviors. The U.S. and Australia showed a broader range in the number of preventive behaviors adopted. A limitation of my first visualization was that it was not broken up into specific preventive behaviors, so it was not possible to parse out why certain countries had different distributions (i.e. what behaviors were driving those differences). 
+
+### Version 2
+
+```{r 2_version_2}
 covid_data_prevent <- covid_data %>% 
   group_by(country_of_residence) %>% 
   summarise("Hand Washing" = mean(hand_washing),
@@ -370,31 +370,23 @@ viz_2_final <- covid_data_prevent %>%
   dark_mode(theme_minimal()) +
   xlab("") +
   ylab("Average adoption by country") +
-  labs(title = "Early-pandemic adoption of protective health behaviors varied considerably by country")
+  labs(title = "Adoption of preventive behaviors varies by country")
 viz_2_final
 ```
 
-Visualization 3
-=========================
-Column {data-width=250}
------------------------------------------------------------------------
+***
+#### Description of Version 2
+To address the issue of my first plot not showing the breakdown of specific preventive behaviors, instead of using a ridgeline plot I visualized the adoption of each specific preventive behavior using a dumbbell dot plot. The average adoption of each behavior in each country was visualized using geom_point, and I used geom_line to show the range of average adoption across all nine countries. I also clustered the countries by region and ordered the behaviors by the range of their average adoption. Finally, I changed the aesthetic of the plot using the ggdark package. 
 
-### Background
+#### Takeaways
+Using geom_point and geom_line in my final visualization made it easier to see the distribution across countries -- and how that distribution varied by behavior. Mask wearing, for instance, showed a broad spread across countries, with the U.S. and Australia showing low adoption while over 50% of individuals in the other countries reporting adoption of that behavior. In contrast, hand washing showed a small range, with average adoption clustered near 100% of individuals across countries.
 
-For my third visualization, I wanted to convey the overlap between each of the predictor variables related to perception of government response. The best means of communicating correlation that I could think of would be a heatmap.
+Visualization 3 {.storyboard}
+==============================
 
-Some helpful feedback I got from peer reviewers included adding a label to the fill, changing the direction of the color scale so it would be more intuitive, and fixing the labels so the variable names were more complete. I also chose to use a color scale that more closely corresponded with what a layperson might think of as heat so it would be easier to understand with higher correlations being an increase in intensity. I debated about what direction would be most intuitive but ultimately decided that darker colors would be more easily understandable as higher correlations.
+### Version 1
 
-The final visualization shows that the measures of trust, government performance, and government preparedness were all highly correlated with each other. Someone's perceived control over whether they would contract COVID-19 was moderately positively correlated with positive perceptions of government. In contrast, having a higher perception of risk was slightly negatively correlated with positive perceptions of government. 
-
-In order to explore more methods of heatmap visualization, I added an additional visualization depicting the adoption of preventive behaviors by age. This heatmap shows the average number of behaviors adopted in each age group for each country. Some countries display visible trends; the U.S. shows low adoption of preventive behaviors that bottom out for 50-54 year-olds, whereas Nigeria shows high overall adoption of preventive behaviors that peaks for individuasl age 45-49.
-
-Column
------------------------------------------------------------------------
-
-### Initial Visualization
-
-```{r dataviz_3}
+```{r 3_version_1}
 
 data_for_cor <- covid_data %>% 
   dplyr::select(c(trust, gov_perf, gov_prep, risk, control))
@@ -411,14 +403,25 @@ viz_3 <- heatmaply(cor,
         labRow = rownames(cor),
         xlab = "", 
         ylab = "",
-        main = "Correlational heatmap of predictor variables",
+        main = "Correlational heatmap of perceptions of government",
         heatmap_layers = theme(axis.line=element_blank()))
 viz_3
 ```
 
-### Final Visualization
+***
 
-```{r viz_3_final}
+#### Intended Purpose
+For my third visualization, I wanted to convey the overlap between each of the predictor variables related to perception of government response.
+
+#### Intended Audience
+The intended audience of this visualization is scientists or readers of this study who are more interested in how these variables were operationalized. Addressing multicollinearity between predictors is the kind of issue that readers of an academic paper would want to see but that laypeople would likely not focus on.
+
+#### Description of Version 1
+To communicate correlations between predictor variables, I created a heatmap of the correlation matrix. Some helpful feedback I got from peer reviewers included adding a label to the fill, changing the direction of the color scale so it would be more intuitive, and fixing the labels so the variable names were more complete. 
+
+### Version 2
+
+```{r 3_version_2}
 data_for_cor_final <- covid_data %>% 
   dplyr::select(c(trust, gov_perf, gov_prep, risk, control)) %>% 
   rename("Trust" = "trust",
@@ -442,13 +445,21 @@ viz_3_final <- heatmaply(cor_final,
         xlab = "", 
         ylab = "",
         key.title = "Correlation",
-        main = "Correlational heatmap of predictor variables",
+        main = "Correlational heatmap of perceptions of government",
         heatmap_layers = theme(axis.line=element_blank()))
 viz_3_final
 
 ```
 
-### Additional Heatmap
+***
+#### Description of Version 2
+To address issues raised by reviewers, added a label to the fill, changed the direction of the color scale so it would be more intuitive, and fixed the labels so the variable names were more complete. 
+I also chose to use a color scale that more closely corresponded with what a layperson might think of as heat so it would be easier to understand with higher correlations being an increase in intensity. I debated about what direction would be most intuitive but ultimately decided that darker colors would be more easily understandable as higher correlations.
+
+#### Takeaways
+The final visualization shows that the measures of trust, government performance, and government preparedness were all highly correlated with each other. Someone's perceived control over whether they would contract COVID-19 was moderately positively correlated with positive perceptions of government. In contrast, having a higher perception of risk was slightly negatively correlated with positive perceptions of government. 
+
+### Bonus Heatmap
 
 ```{r dataviz_4}
 avg_prevent_age <- covid_data %>% 
@@ -478,7 +489,11 @@ viz_4 <- avg_prevent_age %>%
   dark_mode(theme_minimal()) +
   xlab("Age group") +
   ylab("") + 
-  labs(title = "Adoption of preventive behaviors varies by age across countries")
+  labs(title = "Adoption of preventive behaviors varies by age")
 viz_4
 ```
+
+***
+#### Rationale
+After making edits to my third visualization, I felt that I had not considerably expanded my toolkit of heatmap visualization, so I added an additional visualization depicting the adoption of preventive behaviors by age. This heatmap shows the average number of behaviors adopted in each age group for each country. Some countries display visible trends; the U.S. shows low adoption of preventive behaviors that bottom out for 50-54 year-olds, whereas Nigeria shows high overall adoption of preventive behaviors that peaks for individuasl age 45-49.
 
